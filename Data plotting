@@ -1,0 +1,51 @@
+import pandas as pd 
+import matplotlib.pyplot as plt 
+from google.colab import drive 
+import numpy as np
+drive.mount('/content/drive/')
+dx = pd.read_csv("/content/drive/MyDrive/Nifty 50 Historical Data.csv")
+dy = pd.read_csv("/content/drive/MyDrive/UPLL Historical Data.csv")
+
+x = [float(i.replace("," , "")) for i in list(dx['Open'])]
+y = list(dy['Open'])
+
+sum_x = sum_y = sum_xy = sum_x2 = sum_y2 = sumerr = 0
+
+
+for i in x :
+  sum_x = sum_x+i
+for i in y:
+  sum_y = sum_y+i
+for i in x :
+  sum_x2 = sum_x2+i*i
+for i in y:
+  sum_y2 = sum_y2+i*i
+for i in range (0,len(x)):
+  sum_xy = sum_xy + (x[i]*y[i])
+
+m =(len(x)*sum_xy-(sum_x*sum_y))/((len(x)*sum_x2)-(sum_x*sum_x))
+c =((sum_x2*sum_y)-(sum_x*sum_xy))/((len(x)*sum_x2)-(sum_x*sum_x))
+
+print("m =", m)
+print("c =", c)
+
+
+for i in range(len(x)):
+  sumerr = sumerr + (y[i] - (m * x[i] + c)) ** 2
+print("Sum of Square of Error =", sumerr)
+# print(15500*m+c)
+print("\n")
+
+plt.scatter(x,y)
+# plt.show()
+
+
+X = np.linspace(15000,19000,31)
+Y = m*X+c
+plt.plot(X, Y, '-r', label='y=0.03x-280.263')
+plt.title('Graph of y=0.03x-280.263')
+plt.xlabel('x', color='#1C2833')
+plt.ylabel('y', color='#1C2833')
+plt.legend(loc='upper left')
+plt.grid()
+plt.show()
